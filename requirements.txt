@@ -1,4 +1,8 @@
-python-telegram-bot==13.4.1
+python-telegram-bot
+python-telegram-bot[webhooks]
+flask
+asgiref
+uvicorn
 
 # for .env file support
 python-dotenv
