@@ -13,14 +13,14 @@ def main():
         .build()
     )
 
+    setup_dispatcher(application)
+
     application.run_webhook(
         listen="0.0.0.0",                          
         port=int(PORT),                          
         webhook_url=f"https://{HEROKU_APP_NAME}.herokuapp.com/{TELEGRAM_TOKEN}"
     )
-    setup_dispatcher(application)
 
-    application.run_polling(allowed_updates=Update.ALL_TYPES)
 
 if __name__ == "__main__":
     main()
