@@ -64,6 +64,7 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'from': {'id': 49820636, 'first_name': 'Daniil', 'is_bot': False, 'last_name': 'Okhlopkov', 'username': 'danokhlopkov', 'language_code': 'en'}
     }"""
     user_id = None
+    print(update.message.reply_to_message)
     if update.message.reply_to_message.from_user:
         user_id = update.message.reply_to_message.from_user.id
     elif REPLY_TO_THIS_MESSAGE in update.message.reply_to_message.text:
