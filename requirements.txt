@@ -1,8 +1,6 @@
 python-telegram-bot
 python-telegram-bot[webhooks]
-flask
-asgiref
-uvicorn
+fastapi
 
 # for .env file support
 python-dotenv

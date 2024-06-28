@@ -1,88 +1,51 @@
-from telegram.ext import (
-    Application, 
-    ContextTypes, 
-    CallbackContext,
-    TypeHandler,
-    ExtBot
-)
+from telegram.ext import Application
 from telegram import Update
 
 import asyncio
 from http import HTTPStatus
-from dataclasses import dataclass
+from contextlib import asynccontextmanager
 from handlers import setup_dispatcher
 from settings import TELEGRAM_TOKEN, HEROKU_APP_NAME, PORT
 
-import uvicorn
-from asgiref.wsgi import WsgiToAsgi
-from flask import Flask, Response, abort, make_response, request
-
-@dataclass
-class WebhookUpdate:
-    """Simple dataclass to wrap a custom update type"""
-
-    user_id: int
-    payload: str
-class CustomContext(CallbackContext[ExtBot, dict, dict, dict]):
-    """
-    Custom CallbackContext class that makes `user_data` available for updates of type
-    `WebhookUpdate`.
-    """
-
-    @classmethod
-    def from_update(
-        cls,
-        update: object,
-        application: "Application",
-    ) -> "CustomContext":
-        if isinstance(update, WebhookUpdate):
-            return cls(application=application, user_id=update.user_id)
-        return super().from_update(update, application)
+from fastapi import FastAPI, Request, Response
 
 async def main():
     print(f"Running bot in webhook mode. Make sure that this url is correct: https://{HEROKU_APP_NAME}.herokuapp.com/")
 
-    context_types = ContextTypes(context=CustomContext)
-    application = (
-        Application.builder().token(TELEGRAM_TOKEN).updater(None).context_types(context_types).build()
+    ptb = (
+        Application.builder()
+            .updater(None)
+            .token(TELEGRAM_TOKEN) # replace <your-bot-token>
+            .read_timeout(7)
+            .get_updates_read_timeout(42)
+            .build()
     )
 
-    # Pass webhook settings to telegram
-    await application.bot.set_webhook(url=f"https://{HEROKU_APP_NAME}.herokuapp.com/telegram", allowed_updates=Update.ALL_TYPES)
+    @asynccontextmanager
+    async def lifespan(_: FastAPI):
+        await ptb.bot.setWebhook(f"https://{HEROKU_APP_NAME}.herokuapp.com/{TELEGRAM_TOKEN}") # replace <your-webhook-url>
+        async with ptb:
+            await ptb.start()
+            yield
+            await ptb.stop()
 
-    # Set up webserver
-    flask_app = Flask(__name__)
+    # Initialize FastAPI app (similar to Flask)
+    app = FastAPI(lifespan=lifespan)
 
-    @flask_app.post("/telegram")  # type: ignore[misc]
-    async def telegram() -> Response:
-        """Handle incoming Telegram updates by putting them into the `update_queue`"""
-        await application.update_queue.put(Update.de_json(data=request.json, bot=application.bot))
-        return Response(status=HTTPStatus.OK)
-    
-    @flask_app.get("/healthcheck")  # type: ignore[misc]
-    async def health() -> Response:
+    @app.post("/")
+    async def process_update(request: Request):
+        req = await request.json()
+        update = Update.de_json(req, ptb.bot)
+        await ptb.process_update(update)
+        return Response(status_code=HTTPStatus.OK)
+
+    @app.get("/hc")  # type: ignore[misc]
+    async def health(request: Request, ) -> Response:
         """For the health endpoint, reply with a simple plain text message."""
-        response = make_response("The bot is still running fine :)", HTTPStatus.OK)
-        response.mimetype = "text/plain"
-        return response
+        return Response(status_code=HTTPStatus.OK, content="OK")
     
-    setup_dispatcher(application)
-
-    webserver = uvicorn.Server(
-        config=uvicorn.Config(
-            app=WsgiToAsgi(flask_app),
-            port=PORT,
-            use_colors=False,
-            host=f"https://{HEROKU_APP_NAME}.herokuapp.com/",
-        )
-    )
-
-    # Run application and webserver together
-    async with application:
-        await application.start()
-        await webserver.serve()
-        await application.stop()
-
+    setup_dispatcher(ptb)
+    
 if __name__ == "__main__":
     asyncio.run(main())
 
