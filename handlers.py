@@ -1,8 +1,7 @@
 import os
-from telegram.ext import CommandHandler, MessageHandler, filters
+from telegram.ext import CommandHandler, MessageHandler, filters, Updater
 
-from settings import WELCOME_MESSAGE, TELEGRAM_SUPPORT_CHAT_ID, REPLY_TO_THIS_MESSAGE, WRONG_REPLY
-
+from settings import BAN_MESSAGE, WELCOME_MESSAGE, TELEGRAM_SUPPORT_CHAT_ID, REPLY_TO_THIS_MESSAGE, WRONG_REPLY
 
 def start(update, context):
     update.message.reply_text(WELCOME_MESSAGE)
@@ -13,6 +12,20 @@ def start(update, context):
         chat_id=TELEGRAM_SUPPORT_CHAT_ID,
         text=f"""
 📞 Connected {user_info}.
+        """,
+    )
+
+def ban(update, context):
+    update.message.reply_text(BAN_MESSAGE)
+
+    user_info = update.message.from_user.to_dict()
+
+    update
+
+    context.bot.send_message(
+        chat_id=TELEGRAM_SUPPORT_CHAT_ID,
+        text=f"""
+Banned {user_info}.
         """,
     )
 
@@ -72,8 +85,8 @@ def forward_to_user(update, context):
         )
 
 
-def setup_dispatcher(dp):
-    dp.add_handler(CommandHandler('start', start))
-    dp.add_handler(MessageHandler(filters.chat_type.private, forward_to_chat))
-    dp.add_handler(MessageHandler(filters.chat(TELEGRAM_SUPPORT_CHAT_ID) & filters.reply, forward_to_user))
-    return dp
+def setup_dispatcher(application):
+    application.add_handler(CommandHandler('start', start))
+    application.add_handler(MessageHandler(filters.ChatType.PRIVATE, forward_to_chat))
+    application.add_handler(MessageHandler(filters.Chat(TELEGRAM_SUPPORT_CHAT_ID) & filters.REPLY, forward_to_user))
+    return application
