@@ -1,6 +1,7 @@
 from telegram.ext import Updater, Application
 from telegram import Update
 
+import asyncio
 from handlers import setup_dispatcher
 from settings import TELEGRAM_TOKEN, HEROKU_APP_NAME, PORT
 
@@ -21,6 +22,7 @@ def main():
         webhook_url=f"https://{HEROKU_APP_NAME}.herokuapp.com/{TELEGRAM_TOKEN}"
     )
 
+    application.updater.start_polling()
 
 if __name__ == "__main__":
     main()
