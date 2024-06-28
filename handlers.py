@@ -3,7 +3,7 @@ from telegram import Update
 from settings import BAN_MESSAGE, WELCOME_MESSAGE, TELEGRAM_SUPPORT_CHAT_ID, REPLY_TO_THIS_MESSAGE, WRONG_REPLY
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    update.message.reply_text(WELCOME_MESSAGE)
+    await update.message.reply_text(WELCOME_MESSAGE)
 
     user_info = update.message.from_user.to_dict()
 
@@ -14,14 +14,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         """,
     )
 
-def ban(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    update.message.reply_text(BAN_MESSAGE)
+async def ban(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(BAN_MESSAGE)
 
     user_info = update.message.from_user.to_dict()
 
     update
 
-    context.bot.send_message(
+    await context.bot.send_message(
         chat_id=TELEGRAM_SUPPORT_CHAT_ID,
         text=f"""
 Banned {user_info}.
@@ -29,7 +29,7 @@ Banned {user_info}.
     )
 
 
-def forward_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def forward_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """{ 
         'message_id': 5, 
         'date': 1605106546, 
@@ -39,14 +39,14 @@ def forward_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }"""
     forwarded = update.message.forward(chat_id=TELEGRAM_SUPPORT_CHAT_ID)
     if not forwarded.forward_from:
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=TELEGRAM_SUPPORT_CHAT_ID,
             reply_to_message_id=forwarded.message_id,
             text=f'{update.message.from_user.id}\n{REPLY_TO_THIS_MESSAGE}'
         )
 
 
-def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """{
         'message_id': 10, 'date': 1605106662, 
         'chat': {'id': -484179205, 'type': 'group', 'title': '☎️ SUPPORT CHAT', 'all_members_are_administrators': True}, 
@@ -72,13 +72,13 @@ def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except ValueError:
             user_id = None
     if user_id:
-        context.bot.copy_message(
+        await context.bot.copy_message(
             message_id=update.message.message_id,
             chat_id=user_id,
             from_chat_id=update.message.chat_id
         )
     else:
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=TELEGRAM_SUPPORT_CHAT_ID,
             text=WRONG_REPLY
         )
