@@ -31,7 +31,7 @@ async def lifespan(_: FastAPI):
 # Initialize FastAPI app (similar to Flask)
 app = FastAPI(lifespan=lifespan)
 
-@app.post("/")
+@app.post(f"/{TELEGRAM_TOKEN}")
 async def process_update(request: Request):
     req = await request.json()
     update = Update.de_json(req, ptb.bot)
