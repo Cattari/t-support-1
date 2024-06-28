@@ -1,11 +1,10 @@
 from telegram.ext import Application
 from telegram import Update
 
-import uvicorn
 from http import HTTPStatus
 from contextlib import asynccontextmanager
 from handlers import setup_dispatcher
-from settings import TELEGRAM_TOKEN, HEROKU_APP_NAME, PORT
+from settings import TELEGRAM_TOKEN, HEROKU_APP_NAME
 
 from fastapi import FastAPI, Request, Response
 
@@ -43,9 +42,3 @@ async def process_update(request: Request):
 async def health(request: Request) -> Response:
     """For the health endpoint, reply with a simple plain text message."""
     return Response(status_code=HTTPStatus.OK, content="OK")
-
-
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=PORT)
-
