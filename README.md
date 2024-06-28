@@ -1,11 +1,11 @@
-# telegram-support-bot
-Easy way to use Telegram bot to hide your identity. Useful for support, anonymous channel management. Free clone of Livegram Bot. 
+# telegram-support
+Easy way to use Telegram. Useful for support, channel management. 
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-## How bot works:
+## How it works:
 
-1. Your client write a message to your bot
+1. Your client write a message to the t bot
 2. Bot forwards the message to your secret chat
 3. Any chat participant can reply on a forwarded message
 4. Bot will copy the message and send it to your client
