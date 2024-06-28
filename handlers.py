@@ -1,9 +1,8 @@
-import os
-from telegram.ext import CommandHandler, MessageHandler, filters, Updater
-
+from telegram.ext import CommandHandler, MessageHandler, filters, ContextTypes
+from telegram import Update
 from settings import BAN_MESSAGE, WELCOME_MESSAGE, TELEGRAM_SUPPORT_CHAT_ID, REPLY_TO_THIS_MESSAGE, WRONG_REPLY
 
-def start(update, context):
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     update.message.reply_text(WELCOME_MESSAGE)
 
     user_info = update.message.from_user.to_dict()
@@ -15,7 +14,7 @@ def start(update, context):
         """,
     )
 
-def ban(update, context):
+def ban(update: Update, context: ContextTypes.DEFAULT_TYPE):
     update.message.reply_text(BAN_MESSAGE)
 
     user_info = update.message.from_user.to_dict()
@@ -30,7 +29,7 @@ Banned {user_info}.
     )
 
 
-def forward_to_chat(update, context):
+def forward_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """{ 
         'message_id': 5, 
         'date': 1605106546, 
@@ -47,7 +46,7 @@ def forward_to_chat(update, context):
         )
 
 
-def forward_to_user(update, context):
+def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """{
         'message_id': 10, 'date': 1605106662, 
         'chat': {'id': -484179205, 'type': 'group', 'title': '☎️ SUPPORT CHAT', 'all_members_are_administrators': True}, 
