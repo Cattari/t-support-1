@@ -24,6 +24,7 @@ ptb = (
 async def lifespan(_: FastAPI):
     await ptb.bot.setWebhook(f"https://{HEROKU_APP_NAME}.herokuapp.com/{TELEGRAM_TOKEN}") # replace <your-webhook-url>
     setup_dispatcher(ptb)
+    ptb.run_webhook()
     async with ptb:
         await ptb.start()
         yield
