@@ -32,7 +32,7 @@ async def main():
     # Initialize FastAPI app (similar to Flask)
     app = FastAPI(lifespan=lifespan)
 
-    @app.post("/")
+    @app.post("/telegram")
     async def process_update(request: Request):
         req = await request.json()
         update = Update.de_json(req, ptb.bot)
@@ -40,7 +40,7 @@ async def main():
         return Response(status_code=HTTPStatus.OK)
 
     @app.get("/hc")  # type: ignore[misc]
-    async def health(request: Request, ) -> Response:
+    async def health(request: Request) -> Response:
         """For the health endpoint, reply with a simple plain text message."""
         return Response(status_code=HTTPStatus.OK, content="OK")
     
