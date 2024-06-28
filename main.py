@@ -25,6 +25,7 @@ async def lifespan(_: FastAPI):
     await ptb.bot.setWebhook(f"https://{HEROKU_APP_NAME}.herokuapp.com/{TELEGRAM_TOKEN}") # replace <your-webhook-url>
     async with ptb:
         await ptb.start()
+        setup_dispatcher(ptb)
         yield
         await ptb.stop()
 
@@ -43,7 +44,7 @@ async def health(request: Request) -> Response:
     """For the health endpoint, reply with a simple plain text message."""
     return Response(status_code=HTTPStatus.OK, content="OK")
 
-setup_dispatcher(ptb)
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=PORT)
