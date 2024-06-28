@@ -24,7 +24,6 @@ ptb = (
 async def lifespan(_: FastAPI):
     await ptb.bot.setWebhook(f"https://{HEROKU_APP_NAME}.herokuapp.com/{TELEGRAM_TOKEN}") # replace <your-webhook-url>
     setup_dispatcher(ptb)
-    ptb.run_webhook()
     async with ptb:
         await ptb.start()
         yield
@@ -33,7 +32,7 @@ async def lifespan(_: FastAPI):
 # Initialize FastAPI app (similar to Flask)
 app = FastAPI(lifespan=lifespan)
 
-@app.post("/telegram")
+@app.post("/")
 async def process_update(request: Request):
     req = await request.json()
     update = Update.de_json(req, ptb.bot)
