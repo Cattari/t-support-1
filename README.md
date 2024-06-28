@@ -1,7 +1,7 @@
 # telegram-support
 Easy way to use Telegram. Useful for support, channel management. 
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Cattari/t-support-1)
 
 ## How it works:
 
