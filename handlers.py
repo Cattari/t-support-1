@@ -65,7 +65,10 @@ async def forward_to_user(update: Update, context: ContextTypes.bot_data):
     user_id = None
     print("REPLY TO MESSAGE")
     print(update.message.reply_to_message)
-    if update.message.reply_to_message.forward_origin:
+    print("FORWARD FROM")
+    print(update.message.reply_to_message.forward_from)
+    if update.message.reply_to_message.forward_from:
+        user_id = update.message.reply_to_message.forward_from.id
         # user_id = update.message.reply_to_message.forward_origin.de_list()['data']['sender_user']['id']
         print('1')
         print(update.message.reply_to_message.reply_to_message.from_user.name)
