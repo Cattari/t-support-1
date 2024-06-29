@@ -45,7 +45,7 @@ async def forward_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def forward_to_user(update: Update, context: ContextTypes.bot_data):
     """{
         'message_id': 10, 'date': 1605106662, 
         'chat': {'id': -484179205, 'type': 'group', 'title': '☎️ SUPPORT CHAT', 'all_members_are_administrators': True}, 
@@ -63,9 +63,10 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'from': {'id': 49820636, 'first_name': 'Daniil', 'is_bot': False, 'last_name': 'Okhlopkov', 'username': 'danokhlopkov', 'language_code': 'en'}
     }"""
     user_id = None
+    print("REPLY TO MESSAGE")
     print(update.message.reply_to_message)
     if update.message.reply_to_message.forward_origin:
-        user_id = update.message.reply_to_message.forward_origin.de_list()['data']['sender_user']['id']
+        # user_id = update.message.reply_to_message.forward_origin.de_list()['data']['sender_user']['id']
         print('forward origin data')
         print(update.message.reply_to_message.forward_origin.de_list())
     elif REPLY_TO_THIS_MESSAGE in update.message.reply_to_message.text:
