@@ -84,21 +84,15 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if update.message.from_user:
         user_id = update.message.from_user.id
-    # is_user_in_chat = bool(await update.message.chat.get_member(user_id))
-    is_reply_to_bot = update.message.from_user.is_bot
+    is_user_in_chat = bool(await update.message.chat.get_member(user_id))
+    # is_reply_to_bot = update.message.from_user.is_bot
 
-    if user_id and is_reply_to_bot:
+    if user_id and not is_user_in_chat:
         await context.bot.copy_message(
             message_id=update.message.message_id,
             chat_id=user_id,
             from_chat_id=update.message.chat_id
         )
-    else:
-        await context.bot.send_message(
-            chat_id=TELEGRAM_SUPPORT_CHAT_ID,
-            text=WRONG_REPLY
-        )
-
 
 def setup_dispatcher(application):
     application.add_handler(CommandHandler('start', start))
