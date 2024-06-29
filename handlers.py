@@ -78,12 +78,14 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }"""
     user_id = None
     print('FROM USER')
-    print(dir(update.message.from_user))
+    print(update.message.from_user)
 
     if update.message.from_user:
         user_id = update.message.from_user.id
-    is_in_chat = bool(await update.message.chat.get_member(user_id))
-    if user_id and not is_in_chat:
+    # is_user_in_chat = bool(await update.message.chat.get_member(user_id))
+    is_reply_to_bot = update.message.from_user.is_bot
+
+    if user_id and is_reply_to_bot:
         await context.bot.copy_message(
             message_id=update.message.message_id,
             chat_id=user_id,
