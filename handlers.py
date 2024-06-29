@@ -38,6 +38,7 @@ Banned {user_info}.
         """,
     )
 
+bot_forward_data = {}
 
 async def forward_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """{ 
@@ -48,7 +49,10 @@ async def forward_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'from': {'id': 49820636, 'first_name': 'Daniil', 'is_bot': False, 'last_name': 'Okhlopkov', 'username': 'danokhlopkov', 'language_code': 'en'}
     }"""
     user_id = update.message.from_user.id
-    await update.message.forward(chat_id=TELEGRAM_SUPPORT_CHAT_ID, api_kwargs={'user_id': user_id})
+
+    forwardedMessage = await update.message.forward(chat_id=TELEGRAM_SUPPORT_CHAT_ID, api_kwargs={'user_id': user_id})
+
+    bot_forward_data[forwardedMessage.id] = user_id 
     # await context.bot.send_message(
     #     chat_id=TELEGRAM_SUPPORT_CHAT_ID,
     #     reply_to_message_id=forwarded.message_id,
@@ -81,8 +85,8 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print('REPLY TO MESSAGE')
     print(update.message.reply_to_message)
 
-    if update.message.reply_to_message:
-        user_id = update.message.reply_to_message.api_kwargs.user_id
+    if bot_forward_data[update.message.reply_to_message.id]:
+        user_id = bot_forward_data[update.message.reply_to_message.id]
 
     is_reply_to_forwarded_by_bot = update.message.reply_to_message.from_user.is_bot
 
@@ -92,6 +96,8 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=user_id,
             from_chat_id=update.message.chat_id
         )
+
+        del bot_forward_data[update.message.message_id]
 
 def setup_dispatcher(application):
     application.add_handler(CommandHandler('start', start))
