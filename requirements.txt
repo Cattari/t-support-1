@@ -2,6 +2,7 @@ python-telegram-bot
 python-telegram-bot[webhooks]
 fastapi
 uvicorn
+cachetools
 
 # for .env file support
 python-dotenv
