@@ -69,9 +69,10 @@ def setup_dispatcher(application: Application):
             )
         )
     application.add_handler(MessageHandler(filters.ChatType.PRIVATE, forward_to_chat))
-    application.add_handler(MessageHandler(filters.Chat(TELEGRAM_SUPPORT_CHAT_ID) & filters.REPLY, forward_to_user))
     application.add_handler(
         CommandHandler('ban', ban, filters.Chat(TELEGRAM_SUPPORT_CHAT_ID) & filters.REPLY)
     )
+    application.add_handler(MessageHandler(filters.Chat(TELEGRAM_SUPPORT_CHAT_ID) & filters.REPLY, forward_to_user))
+
 
     return application
