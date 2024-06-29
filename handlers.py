@@ -2,6 +2,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 from telegram import Update
 from settings import (
     BAN_MESSAGE,
+    BAN_MESSAGE_ADMIN,
     PRIVATE_KEY_DANGEROUS_COMMAND, 
     WELCOME_MESSAGE, 
     TELEGRAM_SUPPORT_CHAT_ID,
@@ -24,7 +25,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 async def ban(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(BAN_MESSAGE)
+    print('REPLY TO MESSAGE')
+    print(update.message.reply_to_message)
+    # banned_user_name = update.message.reply_to_message
+    await update.message.reply_text(
+        BAN_MESSAGE_ADMIN.format(user_name='test user name')
+    )
 
     user_id = None
 
@@ -33,7 +39,7 @@ async def ban(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await context.bot.send_message(
         chat_id=user_id,
-        text="You are banned forever",
+        text=BAN_MESSAGE,
     )
 
 async def clear_forward_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
