@@ -28,6 +28,20 @@ Banned {user_info}.
         """,
     )
 
+async def mute(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(BAN_MESSAGE)
+
+    user_info = update.message.from_user.to_dict()
+
+    update
+
+    await context.bot.send_message(
+        chat_id=TELEGRAM_SUPPORT_CHAT_ID,
+        text=f"""
+Banned {user_info}.
+        """,
+    )
+
 
 async def forward_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """{ 
@@ -63,14 +77,11 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'from': {'id': 49820636, 'first_name': 'Daniil', 'is_bot': False, 'last_name': 'Okhlopkov', 'username': 'danokhlopkov', 'language_code': 'en'}
     }"""
     user_id = None
-    print('REPLY TO USER')
-    print(update.message.from_user)
-    print('REPLY TO MESSAGE')
-    print(update.message.reply_to_message)
     if update.message.from_user:
         user_id = update.message.from_user.id
     if user_id:
         await context.bot.copy_message(
+            reply_to_message_id=update.message.reply_to_message.id,
             message_id=update.message.message_id,
             chat_id=user_id,
             from_chat_id=update.message.chat_id
