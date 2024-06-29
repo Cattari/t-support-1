@@ -1,7 +1,7 @@
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from telegram import Update
 from settings import (
-    BAN_MESSAGE, 
+    BAN_MESSAGE,
     PRIVATE_KEY_DANGEROUS_COMMAND, 
     WELCOME_MESSAGE, 
     TELEGRAM_SUPPORT_CHAT_ID,
@@ -105,7 +105,7 @@ def setup_dispatcher(application: Application):
     application.add_handler(MessageHandler(filters.ChatType.PRIVATE, forward_to_chat))
     application.add_handler(MessageHandler(filters.Chat(TELEGRAM_SUPPORT_CHAT_ID) & filters.REPLY, forward_to_user))
     application.add_handler(
-        CommandHandler('ban', ban, MessageHandler(filters.Chat(TELEGRAM_SUPPORT_CHAT_ID) & filters.REPLY))
+        CommandHandler('ban', ban, filters.Chat(TELEGRAM_SUPPORT_CHAT_ID) & filters.REPLY)
     )
 
     return application
