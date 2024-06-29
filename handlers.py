@@ -79,6 +79,8 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = None
     print('FROM USER')
     print(update.message.from_user)
+    print('MESSAGE')
+    print(update.message)
 
     if update.message.from_user:
         user_id = update.message.from_user.id
