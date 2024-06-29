@@ -77,11 +77,13 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'from': {'id': 49820636, 'first_name': 'Daniil', 'is_bot': False, 'last_name': 'Okhlopkov', 'username': 'danokhlopkov', 'language_code': 'en'}
     }"""
     user_id = None
+    print('FROM USER')
+    print(update.message.from_user)
+
     if update.message.from_user:
         user_id = update.message.from_user.id
-    if user_id:
+    if user_id and not update.message.from_user.can_read_all_group_messages:
         await context.bot.copy_message(
-            reply_to_message_id=update.message.reply_to_message.id,
             message_id=update.message.message_id,
             chat_id=user_id,
             from_chat_id=update.message.chat_id
