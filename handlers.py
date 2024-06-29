@@ -71,7 +71,6 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_id = update.message.from_user.id
     if user_id:
         await context.bot.copy_message(
-            reply_to_message_id=update.message.message_id,
             message_id=update.message.message_id,
             chat_id=user_id,
             from_chat_id=update.message.chat_id
