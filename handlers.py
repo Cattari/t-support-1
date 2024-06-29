@@ -55,15 +55,18 @@ async def forward_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = None
 
-    if bot_forward_data[update.message.reply_to_message.id]:
-        user_id = bot_forward_data[update.message.reply_to_message.id]
-    is_reply_to_forwarded_by_bot = update.message.reply_to_message.from_user.is_bot
-    if user_id and is_reply_to_forwarded_by_bot:
-        await context.bot.copy_message(
-            message_id=update.message.message_id,
-            chat_id=user_id,
-            from_chat_id=update.message.chat_id
-        )
+    try:
+        if bot_forward_data[update.message.reply_to_message.id]:
+            user_id = bot_forward_data[update.message.reply_to_message.id]
+        is_reply_to_forwarded_by_bot = update.message.reply_to_message.from_user.is_bot
+        if user_id and is_reply_to_forwarded_by_bot:
+            await context.bot.copy_message(
+                message_id=update.message.message_id,
+                chat_id=user_id,
+                from_chat_id=update.message.chat_id
+            )
+    except:
+        print('Failed to forward back to user')
 
 
 def setup_dispatcher(application: Application):
