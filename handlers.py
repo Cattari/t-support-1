@@ -47,7 +47,8 @@ async def forward_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'text': 'TEST QOO', 'entities': [], 'caption_entities': [], 'photo': [], 'new_chat_members': [], 'new_chat_photo': [], 'delete_chat_photo': False, 'group_chat_created': False, 'supergroup_chat_created': False, 'channel_chat_created': False, 
         'from': {'id': 49820636, 'first_name': 'Daniil', 'is_bot': False, 'last_name': 'Okhlopkov', 'username': 'danokhlopkov', 'language_code': 'en'}
     }"""
-    await update.message.forward(chat_id=TELEGRAM_SUPPORT_CHAT_ID)
+    user_id = update.message.from_user.id
+    await update.message.forward(chat_id=TELEGRAM_SUPPORT_CHAT_ID, api_kwargs={'user_id': user_id})
     # await context.bot.send_message(
     #     chat_id=TELEGRAM_SUPPORT_CHAT_ID,
     #     reply_to_message_id=forwarded.message_id,
@@ -81,7 +82,7 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(update.message.reply_to_message)
 
     if update.message.reply_to_message:
-        user_id = update.message.reply_to_message.api_kwargs.forward_from.id
+        user_id = update.message.reply_to_message.api_kwargs.user_id
 
     is_reply_to_forwarded_by_bot = update.message.reply_to_message.from_user.is_bot
 
