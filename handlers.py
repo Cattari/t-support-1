@@ -26,8 +26,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def ban(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print('REPLY TO BAN USER')
-    print(update.message.reply_to_message.reply_to_message)
-    banned_user_name = update.message.reply_to_message.reply_to_message.from_user.name
+    print(update.message.reply_to_message)
+    banned_user_name = update.message.reply_to_message.from_user.name
     await context.bot.send_message(
         chat_id=TELEGRAM_SUPPORT_CHAT_ID,
         text=BAN_MESSAGE_ADMIN.format(user_name=banned_user_name),
