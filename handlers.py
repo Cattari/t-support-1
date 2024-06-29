@@ -1,6 +1,11 @@
-from telegram.ext import CommandHandler, MessageHandler, filters, ContextTypes
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from telegram import Update
-from settings import BAN_MESSAGE, WELCOME_MESSAGE, TELEGRAM_SUPPORT_CHAT_ID, REPLY_TO_THIS_MESSAGE, WRONG_REPLY
+from settings import (
+    BAN_MESSAGE, 
+    PRIVATE_KEY_DANGEROUS_COMMAND, 
+    WELCOME_MESSAGE, 
+    TELEGRAM_SUPPORT_CHAT_ID,
+)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(WELCOME_MESSAGE)
@@ -14,31 +19,26 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         """,
     )
 
+bot_forward_data = {}
+
 async def ban(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(BAN_MESSAGE)
 
-    user_info = update.message.from_user.to_dict()
+    user_id = None
+
+    if bot_forward_data[update.message.reply_to_message.id]:
+        user_id = bot_forward_data[update.message.reply_to_message.id]
+
+    # user_info = update.message.from_user.to_dict()
 
     await context.bot.send_message(
-        chat_id=TELEGRAM_SUPPORT_CHAT_ID,
-        text=f"""
-Banned {user_info}.
-        """,
+        chat_id=user_id,
+        text="You are banned forever",
     )
 
-async def mute(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(BAN_MESSAGE)
-
-    user_info = update.message.from_user.to_dict()
-
-    await context.bot.send_message(
-        chat_id=TELEGRAM_SUPPORT_CHAT_ID,
-        text=f"""
-Banned {user_info}.
-        """,
-    )
-
-bot_forward_data = {}
+async def clear_forward_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    bot_forward_data.clear()
+    await update.message.reply_text('Cleared forward data')
 
 async def forward_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """{ 
@@ -78,12 +78,6 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'from': {'id': 49820636, 'first_name': 'Daniil', 'is_bot': False, 'last_name': 'Okhlopkov', 'username': 'danokhlopkov', 'language_code': 'en'}
     }"""
     user_id = None
-    print('FROM USER')
-    print(update.message.from_user)
-    print('MESSAGE')
-    print(update.message)
-    print('REPLY TO MESSAGE')
-    print(update.message.reply_to_message)
 
     if bot_forward_data[update.message.reply_to_message.id]:
         user_id = bot_forward_data[update.message.reply_to_message.id]
@@ -99,8 +93,19 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         del bot_forward_data[update.message.message_id]
 
-def setup_dispatcher(application):
+def setup_dispatcher(application: Application):
     application.add_handler(CommandHandler('start', start))
+    if PRIVATE_KEY_DANGEROUS_COMMAND:
+        application.add_handler(
+            CommandHandler(
+                f"clear-reply-data-${PRIVATE_KEY_DANGEROUS_COMMAND}", 
+                clear_forward_data
+            )
+        )
     application.add_handler(MessageHandler(filters.ChatType.PRIVATE, forward_to_chat))
     application.add_handler(MessageHandler(filters.Chat(TELEGRAM_SUPPORT_CHAT_ID) & filters.REPLY, forward_to_user))
+    application.add_handler(
+        CommandHandler('ban', ban, MessageHandler(filters.Chat(TELEGRAM_SUPPORT_CHAT_ID) & filters.REPLY))
+    )
+
     return application
