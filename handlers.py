@@ -66,6 +66,8 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(update.message.reply_to_message)
     if update.message.reply_to_message.from_user.id:
         user_id = update.message.reply_to_message.from_user.id
+        print('USER ID')
+        print(user_id)
     elif REPLY_TO_THIS_MESSAGE in update.message.reply_to_message.text:
         try:
             user_id = int(update.message.reply_to_message.text.split('\n')[0])
