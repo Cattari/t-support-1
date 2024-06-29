@@ -82,7 +82,8 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if update.message.from_user:
         user_id = update.message.from_user.id
-    if user_id and not update.message.from_user.can_read_all_group_messages:
+    is_in_chat = bool(await update.message.chat.get_member(user_id))
+    if user_id and not is_in_chat:
         await context.bot.copy_message(
             message_id=update.message.message_id,
             chat_id=user_id,
