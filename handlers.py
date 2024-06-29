@@ -45,7 +45,7 @@ async def forward_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # )
 
 
-async def forward_to_user(update: Update, context: ContextTypes.bot_data):
+async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """{
         'message_id': 10, 'date': 1605106662, 
         'chat': {'id': -484179205, 'type': 'group', 'title': '☎️ SUPPORT CHAT', 'all_members_are_administrators': True}, 
@@ -62,25 +62,21 @@ async def forward_to_user(update: Update, context: ContextTypes.bot_data):
         'group_chat_created': False, 'supergroup_chat_created': False, 'channel_chat_created': False, 
         'from': {'id': 49820636, 'first_name': 'Daniil', 'is_bot': False, 'last_name': 'Okhlopkov', 'username': 'danokhlopkov', 'language_code': 'en'}
     }"""
-    user_id = None
+    reply_message_id = None
     print("REPLY TO MESSAGE")
     print(update.message.reply_to_message)
     print("FORWARD FROM")
     print(update.message.reply_to_message.forward_from)
     if update.message.reply_to_message.forward_from:
-        user_id = update.message.reply_to_message.forward_from.id
+        reply_message_id = update.message.reply_to_message.id
         # user_id = update.message.reply_to_message.forward_origin.de_list()['data']['sender_user']['id']
         print('1')
         print(update.message.reply_to_message.reply_to_message.from_user.name)
-    elif REPLY_TO_THIS_MESSAGE in update.message.reply_to_message.text:
-        try:
-            user_id = int(update.message.reply_to_message.text.split('\n')[0])
-        except ValueError:
-            user_id = None
-    if user_id:
+    if reply_message_id:
         await context.bot.copy_message(
+            reply_to_message_id=update.message.message_id,
             message_id=update.message.message_id,
-            chat_id=user_id,
+            chat_id=reply_message_id,
             from_chat_id=update.message.chat_id
         )
     else:
