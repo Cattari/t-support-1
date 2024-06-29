@@ -63,11 +63,7 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'from': {'id': 49820636, 'first_name': 'Daniil', 'is_bot': False, 'last_name': 'Okhlopkov', 'username': 'danokhlopkov', 'language_code': 'en'}
     }"""
     reply_message_id = None
-    print("REPLY TO MESSAGE")
-    print(update.message.reply_to_message)
-    print("FORWARD FROM")
-    print(update.message.reply_to_message.forward_from)
-    if update.message.reply_to_message.forward_from:
+    if update.message.reply_to_message:
         reply_message_id = update.message.reply_to_message.id
         # user_id = update.message.reply_to_message.forward_origin.de_list()['data']['sender_user']['id']
         print('1')
