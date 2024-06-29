@@ -12,6 +12,9 @@ from cachetools import TTLCache
 bot_forward_data = TTLCache(maxsize=1000, ttl=60*60*24*2)
 """message_id - user_id; cache time for each key/message - 2 days"""
 
+banned_users = TTLCache(maxsize=1000, ttl=60*60*24*365)
+"""user_id - true; cache time for each key/message - 2 days"""
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(WELCOME_MESSAGE)
 
@@ -25,8 +28,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 async def ban(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print('REPLY TO BAN USER')
-    print(update.message.reply_to_message)
     banned_user_name = update.message.reply_to_message.api_kwargs['forward_sender_name']
     await context.bot.send_message(
         chat_id=TELEGRAM_SUPPORT_CHAT_ID,
@@ -37,11 +38,11 @@ async def ban(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if bot_forward_data[update.message.reply_to_message.id]:
         user_id = bot_forward_data[update.message.reply_to_message.id]
-
-    await context.bot.send_message(
-        chat_id=user_id,
-        text=BAN_MESSAGE,
-    )
+        banned_users[user_id] = True
+        await context.bot.send_message(
+            chat_id=user_id,
+            text=BAN_MESSAGE,
+        )
 
 async def clear_forward_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
     bot_forward_data.clear()
@@ -49,8 +50,13 @@ async def clear_forward_data(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 async def forward_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
-    forwardedMessage = await update.message.forward(chat_id=TELEGRAM_SUPPORT_CHAT_ID, api_kwargs={'user_id': user_id})
-    bot_forward_data[forwardedMessage.id] = user_id 
+
+    try:
+        if not banned_users[user_id]:
+            forwardedMessage = await update.message.forward(chat_id=TELEGRAM_SUPPORT_CHAT_ID, api_kwargs={'user_id': user_id})
+            bot_forward_data[forwardedMessage.id] = user_id 
+    except:
+        print('Failed to ban the user')
 
 async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = None
