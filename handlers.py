@@ -78,7 +78,7 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }"""
     user_id = None
     print('FROM USER')
-    print(update.message.from_user.__dict__)
+    print(dir(update.message.from_user))
 
     if update.message.from_user:
         user_id = update.message.from_user.id
