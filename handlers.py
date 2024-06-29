@@ -79,7 +79,7 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(update.message)
 
     if update.message.reply_to_message:
-        user_id = update.message.reply_to_message.api_kwargs.forward_from.id
+        user_id = update.message.reply_to_message.api_kwargs['forward_from']['id']
 
     is_reply_to_forwarded_by_bot = update.message.reply_to_message.from_user.is_bot
 
