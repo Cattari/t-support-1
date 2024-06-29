@@ -52,12 +52,12 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_id = bot_forward_data[update.message.reply_to_message.id]
     is_reply_to_forwarded_by_bot = update.message.reply_to_message.from_user.is_bot
     
-    update.message.reply_to_message.chat.id
+    print('REPLY TO MESSAGE')
+    print(update.message.reply_to_message)
     if user_id and is_reply_to_forwarded_by_bot:
         await context.bot.copy_message(
             message_id=update.message.message_id,
-            # chat_id=user_id,
-            chat_id=update.message.reply_to_message.chat.id,
+            chat_id=user_id,
             from_chat_id=update.message.chat_id
         )
         del bot_forward_data[update.message.message_id]
