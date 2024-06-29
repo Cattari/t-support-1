@@ -19,8 +19,6 @@ async def ban(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_info = update.message.from_user.to_dict()
 
-    update
-
     await context.bot.send_message(
         chat_id=TELEGRAM_SUPPORT_CHAT_ID,
         text=f"""
@@ -32,8 +30,6 @@ async def mute(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(BAN_MESSAGE)
 
     user_info = update.message.from_user.to_dict()
-
-    update
 
     await context.bot.send_message(
         chat_id=TELEGRAM_SUPPORT_CHAT_ID,
@@ -51,7 +47,7 @@ async def forward_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'text': 'TEST QOO', 'entities': [], 'caption_entities': [], 'photo': [], 'new_chat_members': [], 'new_chat_photo': [], 'delete_chat_photo': False, 'group_chat_created': False, 'supergroup_chat_created': False, 'channel_chat_created': False, 
         'from': {'id': 49820636, 'first_name': 'Daniil', 'is_bot': False, 'last_name': 'Okhlopkov', 'username': 'danokhlopkov', 'language_code': 'en'}
     }"""
-    forwarded = await update.message.forward(chat_id=TELEGRAM_SUPPORT_CHAT_ID)
+    await update.message.forward(chat_id=TELEGRAM_SUPPORT_CHAT_ID)
     # await context.bot.send_message(
     #     chat_id=TELEGRAM_SUPPORT_CHAT_ID,
     #     reply_to_message_id=forwarded.message_id,
@@ -83,7 +79,7 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(update.message)
 
     if update.message.from_user:
-        user_id = update.message.from_user.id
+        user_id = update.message.reply_to_message.from_user.id
 
     is_reply_to_forwarded_by_bot = update.message.reply_to_message.from_user.is_bot
 
