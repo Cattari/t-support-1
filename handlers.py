@@ -52,6 +52,11 @@ async def forward_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
 
     try:
+        print('USER ID')
+        print(user_id)
+        print('BANNED USERS')
+        print(banned_users)
+
         if not banned_users[user_id]:
             forwardedMessage = await update.message.forward(chat_id=TELEGRAM_SUPPORT_CHAT_ID, api_kwargs={'user_id': user_id})
             bot_forward_data[forwardedMessage.id] = user_id 
