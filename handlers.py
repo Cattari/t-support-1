@@ -60,7 +60,9 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=user_id,
             from_chat_id=update.message.chat_id
         )
-        del bot_forward_data[update.message.message_id]
+        del bot_forward_data[update.message.reply_to_message.id]
+        print('BOT FORWARD DATA')
+        print(bot_forward_data)
 
 def setup_dispatcher(application: Application):
     application.add_handler(CommandHandler('start', start))
