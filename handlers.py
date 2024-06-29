@@ -62,16 +62,16 @@ async def forward_to_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'group_chat_created': False, 'supergroup_chat_created': False, 'channel_chat_created': False, 
         'from': {'id': 49820636, 'first_name': 'Daniil', 'is_bot': False, 'last_name': 'Okhlopkov', 'username': 'danokhlopkov', 'language_code': 'en'}
     }"""
-    reply_message_id = None
+    user_id = None
     print('REPLY TO MESSAGE')
-    print(update.message.reply_to_message)
+    print(update.message.reply_to_message.chat.id)
     if update.message.reply_to_message:
-        reply_message_id = update.message.reply_to_message.id
-    if reply_message_id:
+        user_id = update.message.reply_to_message.chat.id
+    if user_id:
         await context.bot.copy_message(
             reply_to_message_id=update.message.message_id,
             message_id=update.message.message_id,
-            chat_id=reply_message_id,
+            chat_id=user_id,
             from_chat_id=update.message.chat_id
         )
     else:
